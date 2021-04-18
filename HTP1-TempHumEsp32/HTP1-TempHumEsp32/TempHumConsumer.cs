@@ -45,15 +45,16 @@ namespace HTP1_TempHumEsp32
                 _mqttClient.Subscribe(new string[] { topic }, new byte[] { 1 });
             });
 
-            var gettingValues = new Thread(new ThreadStart(GetTemperatureAndHumidityValues));
+            var gettingValues = new Thread(GetTemperatureAndHumidityValues);
             gettingValues.Start();
         }
 
         private void GetTemperatureAndHumidityValues() {
             while (true) {
                 _temperature.Value = (float) TempHumProvider.GetTemperature();
+                //Thread.Sleep(1000);
                 _humidity.Value = (float) TempHumProvider.GetHumidity();
-                Thread.Sleep(1000);
+                Thread.Sleep(1500);
             }
         }
 

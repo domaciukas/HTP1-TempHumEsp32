@@ -16,7 +16,7 @@ namespace HTP1_TempHumEsp32
             var networkProvider = new NetworkProvider();
             var isConnectedToNetwork = networkProvider.ConnectToNetwork(WifiSsid, WifiPassword);
 
-            var tempHumProvider = new TempHumProvider(1);
+            var tempHumProvider = new TempHumProvider();
             var tempHumConsumer = new TempHumConsumer(BrokerIp);
 
             if (isConnectedToNetwork) {

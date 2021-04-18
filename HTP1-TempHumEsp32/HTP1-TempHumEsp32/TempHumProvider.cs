@@ -1,5 +1,9 @@
 ﻿using System;
-using System.Device.I2c;
+using System.Diagnostics;
+using System.Threading;
+using Windows.Devices.I2c;
+using nanoFramework.Hardware.Esp32;
+
 
 namespace HTP1_TempHumEsp32
 {
@@ -14,8 +18,11 @@ namespace HTP1_TempHumEsp32
 
         private I2cDevice _sensor;
 
-        public TempHumProvider(int i2cBus) {
-            _sensor = I2cDevice.Create(new I2cConnectionSettings(i2cBus, Address, I2cBusSpeed.StandardMode));
+        public TempHumProvider() {
+            Configuration.SetPinFunction(18, DeviceFunction.I2C1_DATA);
+            Configuration.SetPinFunction(19, DeviceFunction.I2C1_CLOCK);
+            _sensor = I2cDevice.FromId("I2C1",new I2cConnectionSettings(Address));
+
         }
 
         public void Initialize() {
@@ -25,13 +32,15 @@ namespace HTP1_TempHumEsp32
 
         public double GetTemperature() {
             var temperatureMeasurement = ReadWord(MeasureTemperatureCommand);
-            var result = ((175.72 * temperatureMeasurement) / 65536) - 46.85;
+            var result = ((175.72 * temperatureMeasurement) / 65536.0) - 46.85;
+            Debug.WriteLine(result.ToString() + "C");
             return result;
         }
 
         public double GetHumidity() {
             var humidityMeasurement = ReadWord(MeasureHumidityCommand);
-            var result = ((125 * humidityMeasurement) / 65536) - 6;
+            var result = ((125.0 * humidityMeasurement) / 65536.0) - 6.0;
+            Debug.WriteLine(result.ToString() + "%");
             return result;
         }
 
@@ -49,8 +58,10 @@ namespace HTP1_TempHumEsp32
         private int ReadWord(byte command) {
             byte[] buffer = new byte[2];
             _sensor.Write(new byte[] {command});
+            Thread.Sleep(30);
             _sensor.Read(buffer);
-            return buffer[0] << 8 + buffer[1];
+            int returnValue = (buffer[0] << 8) + buffer[1];
+            return returnValue;
         }
 
     }
