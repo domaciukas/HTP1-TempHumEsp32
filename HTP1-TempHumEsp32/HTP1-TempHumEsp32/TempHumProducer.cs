@@ -6,7 +6,7 @@ using uPLibrary.Networking.M2Mqtt;
 
 namespace HTP1_TempHumEsp32
 {
-    class TempHumConsumer {
+    class TempHumProducer {
         public string MqttBrokerIp;
         public string MqttClientGuid;
         public TempHumProvider TempHumProvider;
@@ -16,7 +16,7 @@ namespace HTP1_TempHumEsp32
         private HostFloatProperty _temperature;
         private HostFloatProperty _humidity;
 
-        public TempHumConsumer(string brokerIp) {
+        public TempHumProducer(string brokerIp) {
             MqttBrokerIp = brokerIp;
             _mqttClient = new MqttClient(MqttBrokerIp);
             _mqttClient.MqttMsgPublishReceived += HandlePublishReceived;

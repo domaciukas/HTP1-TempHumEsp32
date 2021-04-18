@@ -21,7 +21,7 @@
     <Compile Include="NetworkProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TempHumConsumer.cs" />
+    <Compile Include="TempHumProducer.cs" />
     <Compile Include="TempHumProvider.cs" />
   </ItemGroup>
   <ItemGroup>
