@@ -25,6 +25,11 @@
     <Compile Include="TempHumProvider.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="DevBot9.NanoFramework.Homie, Version=0.8.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\DevBot9.NanoFramework.Homie.0.8.0\lib\DevBot9.NanoFramework.Homie.dll</HintPath>
+      <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
+    </Reference>
     <Reference Include="mscorlib, Version=1.10.3.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.CoreLibrary.1.10.3-preview.7\lib\mscorlib.dll</HintPath>
       <Private>True</Private>
@@ -60,6 +65,11 @@
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
+    <Reference Include="System.Math, Version=1.3.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.System.Math.1.3.1-preview.31\lib\System.Math.dll</HintPath>
+      <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
+    </Reference>
     <Reference Include="System.Net, Version=1.6.5.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.System.Net.1.6.5-preview.7\lib\System.Net.dll</HintPath>
       <Private>True</Private>
@@ -77,10 +87,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\yet-another-homie-implementation\Yahi-nanoNET\Yahi-nanoNET.nfproj" />
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>
