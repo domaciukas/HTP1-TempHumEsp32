@@ -19,9 +19,9 @@ namespace HTP1_TempHumEsp32
         private I2cDevice _sensor;
 
         public TempHumProvider() {
-            Configuration.SetPinFunction(18, DeviceFunction.I2C1_DATA);
-            Configuration.SetPinFunction(19, DeviceFunction.I2C1_CLOCK);
-            _sensor = I2cDevice.FromId("I2C1",new I2cConnectionSettings(Address));
+            Configuration.SetPinFunction(32, DeviceFunction.I2C1_DATA);
+            Configuration.SetPinFunction(33, DeviceFunction.I2C1_CLOCK);
+            _sensor = I2cDevice.FromId("I2C2",new I2cConnectionSettings(Address));
 
         }
 

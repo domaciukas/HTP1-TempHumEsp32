@@ -54,5 +54,11 @@ namespace HTP1_TempHumEsp32
 
             return isOk;
         }
+
+        public string GetIpAddress() {
+            var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+            NetworkInterface networkInterface = networkInterfaces[0];
+            return networkInterface.IPv4Address;
+        }
     }
 }
