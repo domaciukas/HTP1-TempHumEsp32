@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using DevBot9.Protocols.Homie;
-using uPLibrary.Networking.M2Mqtt;
+using nanoFramework.M2Mqtt;
+using nanoFramework.M2Mqtt.Exceptions;
+using nanoFramework.M2Mqtt.Messages;
 
 namespace HTP1_TempHumEsp32
 {
@@ -10,6 +13,8 @@ namespace HTP1_TempHumEsp32
         public string MqttBrokerIp;
         public string MqttClientGuid;
         public TempHumProvider TempHumProvider;
+        public TempHumDisplay TempHumDisplay;
+        public NetworkProvider NetworkProvider;
 
         private MqttClient _mqttClient;
         private HostDevice _hostDevice;
@@ -21,12 +26,18 @@ namespace HTP1_TempHumEsp32
             _mqttClient = new MqttClient(MqttBrokerIp);
             _mqttClient.MqttMsgPublishReceived += HandlePublishReceived;
         }
-        private void HandlePublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e) {
+        private void HandlePublishReceived(object sender, nanoFramework.M2Mqtt.Messages.MqttMsgPublishEventArgs e) {
             _hostDevice.HandlePublishReceived(e.Topic, Encoding.UTF8.GetString(e.Message, 0, e.Message.Length));
         }
 
         public void Initialize() {
-            _mqttClient.Connect(MqttClientGuid);
+            try {
+                _mqttClient.Connect(MqttClientGuid);
+            }
+            catch (MqttConnectionException ex)
+            {
+                Debug.WriteLine("Failed to connect to MQTT server.");
+            }
 
             _hostDevice = DeviceFactory.CreateHostDevice("si7020", "Si7020 on ESP32");
 
@@ -39,10 +50,10 @@ namespace HTP1_TempHumEsp32
             
 
             _hostDevice.Initialize((topic, value, qosLevel, isRetained) => {
-                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), 1, true);
+                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), MqttQoSLevel.AtLeastOnce, true);
 
             }, topic => {
-                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 1 });
+                _mqttClient.Subscribe(new string[] { topic }, new [] {MqttQoSLevel.AtLeastOnce});
             });
 
             var gettingValues = new Thread(GetTemperatureAndHumidityValues);
@@ -52,8 +63,8 @@ namespace HTP1_TempHumEsp32
         private void GetTemperatureAndHumidityValues() {
             while (true) {
                 _temperature.Value = (float) TempHumProvider.GetTemperature();
-                //Thread.Sleep(1000);
                 _humidity.Value = (float) TempHumProvider.GetHumidity();
+                TempHumDisplay.PrintStuff(TempHumProvider.GetTemperature(), TempHumProvider.GetHumidity(), NetworkProvider.GetIpAddress());
                 Thread.Sleep(1500);
             }
         }
