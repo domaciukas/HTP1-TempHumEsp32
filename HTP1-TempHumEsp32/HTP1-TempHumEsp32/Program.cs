@@ -1,21 +1,19 @@
-using System;
+﻿using DevBot9.Protocols.Homie;
+using nanoFramework.UI;
 using System.Diagnostics;
 using System.Threading;
-using DevBot9.Protocols.Homie;
-using nanoFramework.UI;
 
-namespace HTP1_TempHumEsp32
-{
+namespace HTP1_TempHumEsp32 {
 
-    public class Program
-    {
-        private const string BrokerIp = "192.168.1.43";
-        private const string WifiSsid = "Telia-2.4G-Greitas-5FD576";
-        private const string WifiPassword = "Y49T9VCR9UH";
-        public static void Main()
-        {
+    public class Program {
+        private const string BrokerIp = "172.16.0.2";
+        public static void Main() {
+            void AddToLog(string severity, string message) {
+                Debug.WriteLine($"{severity}:{message}");
+            }
+
             var networkProvider = new NetworkProvider();
-            var isConnectedToNetwork = networkProvider.ConnectToNetwork(WifiSsid, WifiPassword);
+            new Thread(() => { networkProvider.MonitorWifiNetworksContinuously(); }).Start();
 
             Bitmap fullScreenBitmap = DisplayControl.FullScreen;
             fullScreenBitmap.Clear();
@@ -25,26 +23,21 @@ namespace HTP1_TempHumEsp32
 
             var tempHumDisplay = new TempHumDisplay(fullScreenBitmap, tempHumFont);
             tempHumDisplay.Initialize();
-            tempHumDisplay.PrintStuff(21.21,52.36,networkProvider.GetIpAddress());
+            tempHumDisplay.PrintStuff(21.21, 52.36, NetworkProvider.GetIpAddress());
 
             var tempHumProvider = new TempHumProvider();
-            var tempHumConsumer = new TempHumProducer(BrokerIp);
-            
+            var tempHumProducer = new TempHumProducer();
 
-            if (isConnectedToNetwork) {
-                DeviceFactory.Initialize();
-                tempHumProvider.Initialize();
-                
-                tempHumConsumer.MqttClientGuid = Guid.NewGuid().ToString();
-                tempHumConsumer.TempHumProvider = tempHumProvider;
-                tempHumConsumer.NetworkProvider = networkProvider;
-                tempHumConsumer.TempHumDisplay = tempHumDisplay;
-                tempHumConsumer.Initialize();
+            DeviceFactory.Initialize();
+            tempHumProvider.Initialize();
 
-                Thread.Sleep(-1);
-            } else {
-                Debug.WriteLine("Exiting...");
-            }
+            tempHumProducer.TempHumProvider = tempHumProvider;
+            tempHumProducer.TempHumDisplay = tempHumDisplay;
+            tempHumProducer.Initialize(BrokerIp, (severity, message) => AddToLog(severity, "TempHumProducer:" + message));
+
+            Thread.Sleep(-1);
+
+            Debug.WriteLine("Exiting...");
         }
     }
 }

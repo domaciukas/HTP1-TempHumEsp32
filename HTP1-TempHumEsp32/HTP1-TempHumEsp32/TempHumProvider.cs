@@ -1,14 +1,11 @@
-﻿using System;
+﻿using nanoFramework.Hardware.Esp32;
 using System.Diagnostics;
 using System.Threading;
 using Windows.Devices.I2c;
-using nanoFramework.Hardware.Esp32;
 
 
-namespace HTP1_TempHumEsp32
-{
-    class TempHumProvider
-    {
+namespace HTP1_TempHumEsp32 {
+    class TempHumProvider {
         private const byte Address = 0x40;
         private const byte MeasureHumidityCommand = 0xF5;
         private const byte MeasureTemperatureCommand = 0xF3;
@@ -21,7 +18,7 @@ namespace HTP1_TempHumEsp32
         public TempHumProvider() {
             Configuration.SetPinFunction(32, DeviceFunction.I2C1_DATA);
             Configuration.SetPinFunction(33, DeviceFunction.I2C1_CLOCK);
-            _sensor = I2cDevice.FromId("I2C2",new I2cConnectionSettings(Address));
+            _sensor = I2cDevice.FromId("I2C2", new I2cConnectionSettings(Address));
 
         }
 
@@ -50,14 +47,14 @@ namespace HTP1_TempHumEsp32
         }
         private byte ReadByte(byte command) {
             byte[] buffer = new byte[1];
-            _sensor.Write(new byte[] {command});
+            _sensor.Write(new byte[] { command });
             _sensor.Read(buffer);
             return buffer[0];
         }
 
         private int ReadWord(byte command) {
             byte[] buffer = new byte[2];
-            _sensor.Write(new byte[] {command});
+            _sensor.Write(new byte[] { command });
             Thread.Sleep(30);
             _sensor.Read(buffer);
             int returnValue = (buffer[0] << 8) + buffer[1];
@@ -65,5 +62,5 @@ namespace HTP1_TempHumEsp32
         }
 
     }
-    
+
 }
