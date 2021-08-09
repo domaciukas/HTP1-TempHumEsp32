@@ -1,18 +1,15 @@
-﻿using System;
-using nanoFramework.Presentation.Media;
+﻿using nanoFramework.Presentation.Media;
 using nanoFramework.UI;
 
-namespace HTP1_TempHumEsp32
-{
-    public class TempHumDisplay
-    {
+namespace HTP1_TempHumEsp32 {
+    public class TempHumDisplay {
         private Bitmap _fullScreenBitmap;
         private Font _tempHumFont;
         //private Font _ipFont;
 
         public TempHumDisplay(Bitmap fullScreenBitmap, Font tempHumFont) {
-             _fullScreenBitmap = fullScreenBitmap;
-             _tempHumFont = tempHumFont;
+            _fullScreenBitmap = fullScreenBitmap;
+            _tempHumFont = tempHumFont;
             //_ipFont = ipFont;
         }
         public void Initialize() {
