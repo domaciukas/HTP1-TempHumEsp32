@@ -1,6 +1,6 @@
-﻿using nanoFramework.Hardware.Esp32;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
+using nanoFramework.Hardware.Esp32;
 using Windows.Devices.I2c;
 
 
@@ -16,9 +16,11 @@ namespace HTP1_TempHumEsp32 {
         private I2cDevice _sensor;
 
         public TempHumProvider() {
-            Configuration.SetPinFunction(32, DeviceFunction.I2C1_DATA);
-            Configuration.SetPinFunction(33, DeviceFunction.I2C1_CLOCK);
-            _sensor = I2cDevice.FromId("I2C2", new I2cConnectionSettings(Address));
+            Configuration.SetPinFunction(25, DeviceFunction.I2C2_DATA);
+            Configuration.SetPinFunction(26, DeviceFunction.I2C2_CLOCK);
+            var i2cSettings = new I2cConnectionSettings(Address);
+            i2cSettings.BusSpeed = I2cBusSpeed.StandardMode;
+            _sensor = I2cDevice.FromId("I2C2", i2cSettings);
 
         }
 
