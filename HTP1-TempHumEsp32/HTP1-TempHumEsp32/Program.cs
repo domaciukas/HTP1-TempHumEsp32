@@ -1,12 +1,12 @@
-﻿using DevBot9.Protocols.Homie;
-using nanoFramework.UI;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
+using DevBot9.Protocols.Homie;
+using nanoFramework.UI;
 
 namespace HTP1_TempHumEsp32 {
 
     public class Program {
-        private const string BrokerIp = "172.16.0.2";
+        private const string _brokerIp = "172.16.0.136";
         public static void Main() {
             void AddToLog(string severity, string message) {
                 Debug.WriteLine($"{severity}:{message}");
@@ -15,11 +15,10 @@ namespace HTP1_TempHumEsp32 {
             var networkProvider = new NetworkProvider();
             new Thread(() => { networkProvider.MonitorWifiNetworksContinuously(); }).Start();
 
-            Bitmap fullScreenBitmap = DisplayControl.FullScreen;
+            var fullScreenBitmap = DisplayControl.FullScreen;
             fullScreenBitmap.Clear();
 
-            Font tempHumFont = Resource.GetFont(Resource.FontResources.temperatureFont);
-            //Font ipFont = Resource.GetFont(Resource.FontResources.IpFont);
+            var tempHumFont = Resource.GetFont(Resource.FontResources.temperatureFont);
 
             var tempHumDisplay = new TempHumDisplay(fullScreenBitmap, tempHumFont);
             tempHumDisplay.Initialize();
@@ -33,7 +32,7 @@ namespace HTP1_TempHumEsp32 {
 
             tempHumProducer.TempHumProvider = tempHumProvider;
             tempHumProducer.TempHumDisplay = tempHumDisplay;
-            tempHumProducer.Initialize(BrokerIp, (severity, message) => AddToLog(severity, "TempHumProducer:" + message));
+            tempHumProducer.Initialize(_brokerIp, (severity, message) => AddToLog(severity, "TempHumProducer:" + message));
 
             Thread.Sleep(-1);
 

@@ -1,6 +1,6 @@
-﻿using DevBot9.Protocols.Homie;
+﻿using System.Threading;
+using DevBot9.Protocols.Homie;
 using DevBot9.Protocols.Homie.Utilities;
-using System.Threading;
 
 namespace HTP1_TempHumEsp32 {
     class TempHumProducer {
@@ -14,7 +14,6 @@ namespace HTP1_TempHumEsp32 {
         private PahoHostDeviceConnection _broker;
 
         public TempHumProducer() {
-
             _broker = new PahoHostDeviceConnection();
         }
 
