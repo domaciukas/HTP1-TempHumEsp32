@@ -17,8 +17,12 @@ namespace HTP1_TempHumEsp32 {
 
             // Loop forever scanning every 30 seconds
             while (true) {
-                Debug.WriteLine("Scanning for WiFi networks...");
-                wifiAdapter.ScanAsync();
+                var currentIpAddres = GetIpAddress();
+                var needToConnect = string.IsNullOrEmpty(currentIpAddres) || (currentIpAddres == "0.0.0.0");
+                if (needToConnect) {
+                    Debug.WriteLine("We're not connected. Scanning for WiFi networks...");
+                    wifiAdapter.ScanAsync();
+                }
 
                 Thread.Sleep(30000);
             }
